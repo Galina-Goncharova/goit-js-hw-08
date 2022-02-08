@@ -1,38 +1,40 @@
 
-import throttle from 'lodash.throttle';
 import '../css/common.css';
+import '../css/03-feedback.css';
+import throttle from 'lodash.throttle';
 
-const VAULT_KEY = 'feedback-form-state';
-
-const formEll = document.querySelector('form');
-const emailEll = document.querySelector('input');
-const messageEll = document.querySelector('textarea');
-
-formEll.addEventListener('submit', onFormSubmit);
-formEll.addEventListener('input', throttle(onFormValue, 500));
-
+const STORAGE_KEY = 'feedback-form-state';
+const refs = {
+  form: document.querySelector('.feedback-form'),
+  textarea: document.querySelector('.feedback-form textarea'),
+  input: document.querySelector('input'),
+};
 const formData = {};
 
-function onFormValue(event) {
-  formData[event.target.name] = event.target.value;
-  const data = JSON.stringify(formData);
-  localStorage.setItem(VAULT_KEY, data);
-  JSON.parse(data);
+populateTextarea();
+
+refs.form.addEventListener('input', throttle(onTextareaInput, 500));
+
+refs.form.addEventListener('submit', e => {
+  e.preventDefault();
+  e.currentTarget.reset();
+  const objData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    localStorage.removeItem(STORAGE_KEY);
+    console.log(objData);
+});
+
+function onTextareaInput(e) {
+  formData[e.target.name] = e.target.value;
+  const stringifiedData = JSON.stringify(formData);
+  localStorage.setItem(STORAGE_KEY, stringifiedData);
 }
 
-function onFormSubmit(event) {
-  event.preventDefault();
-  event.target.reset();
-  localStorage.removeItem(VAULT_KEY);
-  console.log(formData);
-}
+function populateTextarea() {
+  const savedMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
 
-function saveTheValueOfTheFieldOnReload() {
-  const savedValueForm = JSON.parse(localStorage.getItem(VAULT_KEY));
-  if (savedValueForm === null) {
+  if (savedMessage === null) {
     return;
   }
-  messageEll.value = savedValueForm.message || '';
-  emailEll.value = savedValueForm.email || '';
+  refs.textarea.value = savedMessage['message'] || '';
+  refs.input.value = savedMessage['email'] || '';
 }
-saveTheValueOfTheFieldOnReload();
