@@ -30,11 +30,20 @@ function onTextareaInput(e) {
 }
 
 function populateTextarea() {
-  const savedMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-  if (savedMessage === null) {
-    return;
+  let savedMessage = localStorage.getItem(STORAGE_KEY);
+  if (savedMessage) {
+    savedMessage = JSON.parse(savedMessage);
+    // console.log(savedMessage);
+    Object.entries(savedMessage).forEach(([key, value]) => {
+      formData[key] = value;
+      refs.form.elements[key].value = value;
+    });
   }
-  refs.textarea.value = savedMessage['message'] || '';
-  refs.input.value = savedMessage['email'] || '';
+  // const savedMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+  // if (savedMessage === null) {
+  //   return;
+  // }
+  // refs.textarea.value = savedMessage['message'] || '';
+  // refs.input.value = savedMessage['email'] || '';
 }

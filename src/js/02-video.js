@@ -12,6 +12,8 @@ import throttle from 'lodash.throttle';
 
 player.on('timeupdate', throttle(onPlay, 1000));
 
-const timePause = JSON.parse(localStorage.getItem(keyLocalStorage));
-
-player.setCurrentTime(timePause.seconds);
+let timePause = localStorage.getItem(keyLocalStorage);
+if (timePause) {
+ timePause = JSON.parse(localStorage.getItem(keyLocalStorage));
+ player.setCurrentTime(timePause.seconds);
+};
