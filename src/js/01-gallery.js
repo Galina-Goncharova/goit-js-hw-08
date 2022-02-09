@@ -23,3 +23,4 @@ let gallery = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDel
 gallery.on('show.simplelightbox', function (event) {
 	 event.preventDefault();
 });
+console.log("Hello");
